@@ -27,15 +27,27 @@ H:
 # Index
 
  1. Intro<!-- .element: class="fragment" data-fragment-index="1"-->
-     1. Graphics Pipeline
-     2. Polygonal Meshes
+     * Graphics Pipeline & Polygonal Meshes
  2. Polygonal Meshes Representation<!-- .element: class="fragment" data-fragment-index="2"-->
-     1. Bla
+     * Vertex-vertex meshes & Explicit representation
+     * Face-vertex meshes & Face-edge meshes
+     * Winged-edge meshes & Half-edge meshes
  3. OpenGL Polygonal Meshes<!-- .element: class="fragment" data-fragment-index="3"-->
-     1. Bla
+     * Deprecated Immediate Mode
+     * Modern Immediate Mode
+     * Modern Retained Mode
  4. Processing Polygonal Meshes<!-- .element: class="fragment" data-fragment-index="4"-->
+     * Immediate Mode & Retained Mode
+ 
  
 H:
+
+## Intro
+
+  1. Graphics Pipeline
+  2. Polygonal Meshes
+
+V:
 
 ## Intro: Graphics Pipeline
 
@@ -148,11 +160,146 @@ V:
 	<iframe data-autoplay width="420" height="345" src="http://www.youtube.com/embed/2UIgHTkqo9Q"></iframe>
 </section>
 
+V:
+
+## Intro: Polygonal Meshes Modes
+
+ 1. Immediate Mode
+    * lists of objects to be rendered are NOT saved by the lib
+    * each frame: app must re-issue all drawing commands 
+    * Maximum control and flexibility by the app
+    
+ 2. Retained Mode
+    * lists of objects to be rendered are saved by the lib
+    * each frame: app calls -> update model
+    * Allows the lib to optimize rendering (when, processing,...)
+    
+N:
++ Immediate Mode -> app must re-issue all drawing commands required to describe the entire scene
++ Retained mode -> models should be generated first
+
 H:
 
 ## Polygonal Meshes Representation
 
+* Vertex-vertex meshes
+* Explicit representation
+* Face-vertex meshes
+* Face-edge meshes
+* Winged-edge meshes
+
+V:
+
+## Polygonal Meshes Representation
+### Vertex-vertex meshes
+
+<img height="400" src="fig/mesh_vv.png">
+
+N:
++ simplest representation
++ not widely used: faces are implicit
++ small storage space 
++ efficient morphing of shape
+
+V:
+
+## Polygonal Meshes Representation
+### Explicit representation
+
+<img height="400" src="fig/mesh1.png">
+
+N:
++ simple representation
++ widely used: faces are explicit
++ higher storage space 
++ inefficient morphing of shape
+
+V:
+
+## Polygonal Meshes Representation
+### Face-vertex meshes
+
+<img height="400" src="fig/mesh2.png">
+
+N:
++ most widely used (see OpenGL section)
++ lower storage space 
++ efficient morphing of shape
+
+V:
+
+## Polygonal Meshes Representation
+### Face-vertex meshes
+
+<img height="500" src="fig/mesh_fv.jpg">
+
+N:
++ Same but lists faces that surround a vertex
+
+V:
+
+## Polygonal Meshes Representation
+### Face-edge meshes
+
+<img height="500" src="fig/mesh3.png">
+
+N:
++ Similar than fv's, but adds edge info
++ Hard to find vertex incident edges
+
+V:
+
+## Polygonal Meshes Representation
+### Winged-edge meshes
+
+<img height="500" src="fig/mesh_we2.jpg">
+
+N:
++ explicitly represent the vertices, faces, and edges
++ greatest flexibility in dynamically changing the mesh geometry
++ split and merge operations can be done quickly
++ large storage
++ traversing from edge to edge
++ providing an ordered set of faces around an edge
+
+V:
+
+## Polygonal Meshes Representation
+### Helf-edge meshes
+
+* Half-edges -> split edges in two oriented parts
+* Half-edges store the main connectivity information:
+
+<img height="300" src="fig/he_mesh.png">
+
+N:
++ [openmesh](openmesh.org)
+
+V:
+
+## Polygonal Meshes Representation
+### Helf-edge meshes
+
+<figure>
+    <img height='380' src='fig/he_mesh1.png'/>
+    <figcaption>Vertex one-ring neighborhood</figcaption>
+</figure>
+
+N:
++ Critical operation for several algorithms
+
 H:
+
+## OpenGL Polygonal Meshes
+
+* Deprecated Immediate Mode
+* Modern Immediate Mode
+* Modern Retained Mode
+
+N:
++ Old fashioned Retained Mode: Display Lists
+
+V:
 
 ## OpenGL Polygonal Meshes
 ### Deprecated Immediate Mode
@@ -183,10 +330,45 @@ glBegin(GL_TRIANGLES);
 glEnd();
 ```
 
+N:
++ Same as face-vertex mesh representation.
++ Geometry should be transfer every frame.
+
 V:
 
 ## OpenGL Polygonal Meshes
-### Immediate mode: Vertex Arrays / glVertexPointer() / glDrawArrays()
+### Deprecated Immediate Mode
+
+<img style="float:left" height="300" src="fig/cube.png">
+
+
+```glsl
+glBegin(GL_QUADS);
+    // top
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glNormal3f(0.0f, 1.0f, 0.0f);
+    glVertex3f(-0.5f, 0.5f, 0.5f);
+    glVertex3f(0.5f, 0.5f, 0.5f);
+    glVertex3f(0.5f, 0.5f, -0.5f);
+    glVertex3f(-0.5f, 0.5f, -0.5f);
+    // front
+    glColor3f(0.0f, 1.0f, 0.0f);
+    glNormal3f(0.0f, 0.0f, 1.0f);
+    glVertex3f(0.5f, -0.5f, 0.5f);
+    glVertex3f(0.5f, 0.5f, 0.5f);
+    glVertex3f(-0.5f, 0.5f, 0.5f);
+    glVertex3f(-0.5f, -0.5f, 0.5f);
+    ...                 // draw other 4 faces
+glEnd();
+```
+
+N:
++ Same as explicit mesh representation
+
+V:
+
+## OpenGL Polygonal Meshes
+Immediate mode: Vertex Arrays / glVertexPointer() / glDrawArrays()
 
 <img style="float:left" height="300" src="fig/cube.png">
 
@@ -205,10 +387,13 @@ glDrawArrays(GL_TRIANGLES, 0, 36);
 glDisableClientState(GL_VERTEX_ARRAY);
 ```
 
+N:
++ Same as explicit mesh representation
+
 V:
 
 ## OpenGL Polygonal Meshes
-### Immediate mode: Vertex Arrays / glVertexPointer() / glDrawElements()
+Immediate mode (specification & rendering): Vertex Arrays / glVertexPointer() / glDrawElements()
 
 <img style="float:left" height="300" src="fig/cube.png">
 
@@ -233,10 +418,13 @@ glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, indices);
 glDisableClientState(GL_VERTEX_ARRAY);
 ```
 
+N:
++ Same as face-vertex mesh representation
+
 V:
 
 ## OpenGL Polygonal Meshes
-### Retained mode: (VBOs) / glVertexPointer() / glDrawElements()
+Retained mode: (VBOs specification) / glVertexPointer() / glDrawElements()
 
 <img style="float:left" height="300" src="fig/cube.png">
 
@@ -252,10 +440,13 @@ GLubyte indices[] = {0,1,2, 2,3,0,   // 36 of indices
 ...
 ```
 
+N:
++ Same access functions as with vertex-arrays
+
 V:
 
 ## OpenGL Polygonal Meshes
-### Retained mode: (VBOs) / glVertexPointer() / glDrawElements()
+Retained mode: (VBOs generation and transfer) / glVertexPointer() / glDrawElements()
 
 <img style="float:left" height="300" src="fig/cube.png">
 
@@ -274,7 +465,7 @@ glBufferData(GL_ELEMENT_ARRAY_BUFFER,sizeof(indices),indices,GL_STATIC_DRAW);
 V:
 
 ## OpenGL Polygonal Meshes
-### Retained mode: (VBOs) / glVertexPointer() / glDrawElements()
+Retained mode: (VBOs rendering) / glVertexPointer() / glDrawElements()
 
 <img style="float:left" height="300" src="fig/cube.png">
 
@@ -288,8 +479,7 @@ glEnableClientState(GL_VERTEX_ARRAY);
 glVertexPointer(3, GL_FLOAT, 0, 0);
 
 // draw a cube
-glDrawElements(GL_TRIANGLES,
-                            36, GL_UNSIGNED_BYTE, 0);
+glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, 0);
 
 // deactivate vertex arrays after drawing
 glDisableClientState(GL_VERTEX_ARRAY);
@@ -312,7 +502,8 @@ V:
 V:
 
 ## OpenGL Polygonal Meshes
-### glDrawElements [modes](https://www.opengl.org/sdk/docs/man/html/glDrawElements.xhtml)
+
+glDrawElements() [modes](https://www.opengl.org/sdk/docs/man/html/glDrawElements.xhtml)
 
 * GL_POINTS
 * GL_LINE_STRIP, GL_LINE_LOOP, GL_LINES, GL_LINE_STRIP_ADJACENCY, GL_LINES_ADJACENCY
@@ -328,6 +519,8 @@ H:
 ## Processing Polygonal Meshes
 ### Immediate mode
 
+<img style="float:left" height="300" src="fig/strip.png">
+
 ```java
 beginShape(TRIANGLE_STRIP);
 vertex(30, 75);
@@ -340,10 +533,15 @@ vertex(90, 75);
 endShape();
 ```
 
+N:
++ Same as explicit mesh representation, i.e., face-vertex mesh representation is missed
+
 V:
 
 ## Processing Polygonal Meshes
 ### Retained mode
+
+<img style="float:left" height="300" src="fig/strip.png">
 
 ```java
 PShape s;
@@ -367,10 +565,14 @@ void draw() {
 }
 ```
 
+N:
++ Same as explicit mesh representation, i.e., face-vertex mesh representation is missed
+
 V:
 
 ## Processing Polygonal Meshes
-### [beginShape() parameters](https://processing.org/reference/beginShape_.html)
+
+[beginShape() parameters](https://processing.org/reference/beginShape_.html)
 
 * POINTS
 * LINES
