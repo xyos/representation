@@ -31,13 +31,13 @@ H:
  2. Polygonal Meshes Representation<!-- .element: class="fragment" data-fragment-index="2"-->
      * Vertex-vertex meshes & Explicit representation
      * Face-vertex meshes & Face-edge meshes
-     * Winged-edge meshes & Half-edge meshes
  3. OpenGL Polygonal Meshes<!-- .element: class="fragment" data-fragment-index="3"-->
      * Deprecated Immediate Mode
      * Modern Immediate Mode
      * Modern Retained Mode
- 4. Processing Polygonal Meshes<!-- .element: class="fragment" data-fragment-index="4"-->
+ 4. Processing and Proscene Polygonal Meshes<!-- .element: class="fragment" data-fragment-index="4"-->
      * Immediate Mode & Retained Mode
+ 5. References and Workshop<!-- .element: class="fragment" data-fragment-index="5"-->
  
  
 H:
@@ -46,6 +46,7 @@ H:
 
   1. Graphics Pipeline
   2. Polygonal Meshes
+
 
 V:
 
@@ -61,12 +62,14 @@ void setup() {
 public void draw() {
   background(0);
   
+  // Uniform variables: projection & modelview matrices
+  //                    and lightning parameters
   camera(width/2, height/2, 300, width/2, height/2, 0, 0, 1, 0);
   pointLight(200, 200, 200, width/2, height/2, 200);
-  
   translate(width/2, height/2);
   rotateY(angle);
   
+  //Vertex attributes: positions colors and normals
   beginShape(QUADS);
   normal(0, 0, 1);
   fill(50, 50, 200);
@@ -80,6 +83,56 @@ public void draw() {
   angle += 0.01;
 }
 ```
+
+V:
+
+## Intro: Graphics Pipeline
+
+<figure>
+    <img style="float:left" height='500' src='fig/pipeline.png'/>
+    <figcaption>Graphics Pipeline</figcaption>
+</figure>
+```glsl
+//Vertex shader
+for (int i = 0; i < vertexCount; i++) {
+  output = vertexShader(vertex[i]);
+}
+```
+<!-- .element: class="fragment" data-fragment-index="1"-->
+
+```glsl
+//Fragment shader
+for (int i = 0; i < fragmentCount; i++) {
+  screenBuffer[fragment[i].xy] = fragmentShader(fragment[i]);
+}
+```
+<!-- .element: class="fragment" data-fragment-index="2"-->
+
+V:
+
+## Intro: Graphics Pipeline
+
+<figure>
+    <img style="float:left" height='500' src='fig/pipeline.png'/>
+    <figcaption>Graphics Pipeline</figcaption>
+</figure>
+```
+Variables
+* Uniform variables: projection & modelview matrices
+                     and lightning parameters
+* Vertex attributes: positions colors and normals
+* Varying variables: vertex(/fragment) color
+```
+<!-- .element: class="fragment" data-fragment-index="1"-->
+
+```sh
+Data flow paths among app (1),
+vertex shader (2) & Fragment shader (3)
+* Uniform variables: (1)->(2) & (1)->(3)
+* Vertex atrributes: (1)->(2)
+* Varying variables: (2)->(3)
+```
+<!-- .element: class="fragment" data-fragment-index="2"-->
 
 V:
 
@@ -165,14 +218,14 @@ V:
 ## Intro: Polygonal Meshes Modes
 
  1. Immediate Mode
-    * lists of objects to be rendered are NOT saved by the lib
+    * lists of objects to be rendered are NOT saved by GL
     * each frame: app must re-issue all drawing commands 
     * Maximum control and flexibility by the app
     
  2. Retained Mode
-    * lists of objects to be rendered are saved by the lib
+    * lists of objects to be rendered are saved by GL
     * each frame: app calls -> update model
-    * Allows the lib to optimize rendering (when, processing,...)
+    * Allows GL to optimize rendering (when, processing,...)
     
 N:
 + Immediate Mode -> app must re-issue all drawing commands required to describe the entire scene
@@ -186,7 +239,6 @@ H:
 * Explicit representation
 * Face-vertex meshes
 * Face-edge meshes
-* Winged-edge meshes
 
 V:
 
@@ -250,21 +302,6 @@ N:
 V:
 
 ## Polygonal Meshes Representation
-### Winged-edge meshes
-
-<img height="500" src="fig/mesh_we2.jpg">
-
-N:
-+ explicitly represent the vertices, faces, and edges
-+ greatest flexibility in dynamically changing the mesh geometry
-+ split and merge operations can be done quickly
-+ large storage
-+ traversing from edge to edge
-+ providing an ordered set of faces around an edge
-
-V:
-
-## Polygonal Meshes Representation
 ### Helf-edge meshes
 
 * Half-edges -> split edges in two oriented parts
@@ -308,30 +345,32 @@ V:
 
 
 ```glsl
-//Draw a cube with 12 tris.
+//Draw a cube
+// 36 of vertex coords: 3 vertices per tri
+//                      12 tris (2 per face)
 glBegin(GL_TRIANGLES); 
     // front face =================
-    glVertex3fv(v0);    // v0-v1-v2
-    glVertex3fv(v1);
-    glVertex3fv(v2);
-    glVertex3fv(v2);    // v2-v3-v0
-    glVertex3fv(v3);
-    glVertex3fv(v0);
+    glVertex3f(x0,x0,z0);    // v0
+    glVertex3f(x1,x1,z1);    // v1
+    glVertex3f(x2,x2,z2);    // v2
+    glVertex3f(x2,x2,z2);    // v2
+    glVertex3f(x3,x3,z3);    // v3
+    glVertex3f(x0,x0,z0);    // v0
 
     // right face =================
-    glVertex3fv(v0);    // v0-v3-v4
-    glVertex3fv(v3);
-    glVertex3fv(v4);
-    glVertex3fv(v4);    // v4-v5-v0
-    glVertex3fv(v5);
-    glVertex3fv(v0);
+    glVertex3f(x0,x0,z0);    // v0
+    glVertex3f(x3,x3,z3);    // v3
+    glVertex3f(x4,x4,z4);    // v4
+    glVertex3f(x4,x4,z4);    // v4
+    glVertex3f(x5,x5,z5);    // v5
+    glVertex3f(x0,x0,z0);    // v0
     ...                 // draw other 4 faces
 
 glEnd();
 ```
 
 N:
-+ Same as face-vertex mesh representation.
++ Same as explicit mesh representation.
 + Geometry should be transfer every frame.
 
 V:
@@ -343,27 +382,39 @@ V:
 
 
 ```glsl
-glBegin(GL_QUADS);
-    // top
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glNormal3f(0.0f, 1.0f, 0.0f);
-    glVertex3f(-0.5f, 0.5f, 0.5f);
-    glVertex3f(0.5f, 0.5f, 0.5f);
-    glVertex3f(0.5f, 0.5f, -0.5f);
-    glVertex3f(-0.5f, 0.5f, -0.5f);
-    // front
-    glColor3f(0.0f, 1.0f, 0.0f);
-    glNormal3f(0.0f, 0.0f, 1.0f);
-    glVertex3f(0.5f, -0.5f, 0.5f);
-    glVertex3f(0.5f, 0.5f, 0.5f);
-    glVertex3f(-0.5f, 0.5f, 0.5f);
-    glVertex3f(-0.5f, -0.5f, 0.5f);
+//Draw a cube where somewhere in your application you have:
+// v0 : [x0,y0,z0]
+// v1 : [x0,y0,z0]
+// ...
+// v7 : [x7,y7,z7]
+glBegin(GL_TRIANGLES); 
+    // front face =================
+    // v0-v1-v2
+    glVertex3fv(v0);
+    glVertex3fv(v1);
+    glVertex3fv(v2);   
+    // v2-v3-v0
+    glVertex3fv(v2);
+    glVertex3fv(v3);
+    glVertex3fv(v0);
+
+    // right face =================
+    // v0-v3-v4
+    glVertex3fv(v0);
+    glVertex3fv(v3);
+    glVertex3fv(v4);
+    // v4-v5-v0
+    glVertex3fv(v4);
+    glVertex3fv(v5);
+    glVertex3fv(v0);
     ...                 // draw other 4 faces
+
 glEnd();
 ```
 
 N:
-+ Same as explicit mesh representation
++ Same as face-vertex mesh representation.
++ Geometry should be transfer every frame.
 
 V:
 
@@ -488,20 +539,6 @@ glDisableClientState(GL_VERTEX_ARRAY);
 V:
 
 ## OpenGL Polygonal Meshes
-### Arrays
-
-<img style="float:left" height="300" src="fig/normals.png">
-
-1. glVertexPointer()
-2. glNormalPointer()
-3. glColorPointer()
-4. glIndexPointer()
-5. glTexCoordPointer()
-6. glEdgeFlagPointer()
-
-V:
-
-## OpenGL Polygonal Meshes
 
 glDrawElements() [modes](https://www.opengl.org/sdk/docs/man/html/glDrawElements.xhtml)
 
@@ -585,4 +622,34 @@ V:
 H:
 
 ## References
+Polygonal meshes
 
+* [Polygonal meshes](https://en.wikipedia.org/wiki/Polygon_mesh)
+* [openmesh](openmesh.org)
+
+V:
+
+## References
+OpenGL
+
+* [Deprecated Immediate Mode](http://www.songho.ca/opengl/gl_overview.html#glbegin)
+* [Modern Immediate Mode](http://www.songho.ca/opengl/gl_vertexarray.html)
+* [Modern Retained Mode](http://www.songho.ca/opengl/gl_vbo.html)
+
+V:
+
+## References
+Processing & Proscene
+
+* [Processing Shader Tutorial](https://processing.org/tutorials/pshader/)
+* Processing Immediate Mode: All ```beginShape/endShape``` examples
+* Processing Retained mode: All ```PShape``` examples
+* Processing Low-Level (OpenGL calls): Demos->Graphics->LowLevelGL examples
+* Proscene Immediate Mode: all InteractiveFrame examples with a graphics handler such as [Luxo2](https://github.com/remixlab/proscene/tree/master/examples/Frame/Luxo2)
+* Proscene Retained Mode: all InteractiveFrame examples with a pshape such as [DOF](https://github.com/remixlab/proscene/tree/master/examples/Model/DOF)
+
+H:
+
+## Workshop
+
+> Benchmark of different rendering modes in Processing & Proscene along a keyframe camera interpolator path
