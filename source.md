@@ -652,4 +652,4 @@ H:
 
 ## Workshop
 
-> Benchmark of different rendering modes in Processing & Proscene along a keyframe camera interpolator path
+> Benchmark of different rendering modes in Processing & Proscene along a [keyframe camera interpolator path](https://github.com/remixlab/proscene/tree/master/examples/Timing/CameraInterpolation)
