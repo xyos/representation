@@ -509,13 +509,30 @@ V:
 * QUADS
 * QUAD_STRIP
 
+V:
+
+## Processing Polygonal Meshes: [hemesh](http://www.wblut.com/he_mesh/)
+
+<figure>
+    <img height='380' src='fig/hemesh.png'/>
+</figure>
+
+V:
+
+## Processing Polygonal Meshes: [hemesh](http://www.wblut.com/he_mesh/)
+
+* Creation
+* Modification
+* Subdivision
+* Selection
+
 H:
 
 ## References
 Polygonal meshes
 
 * [Polygonal meshes](https://en.wikipedia.org/wiki/Polygon_mesh)
-* [openmesh](openmesh.org)
+* [hemesh](http://www.wblut.com/he_mesh/)
 
 V:
 
@@ -529,17 +546,19 @@ OpenGL
 V:
 
 ## References
-Processing & Proscene
+Processing
 
 * [Processing Shader Tutorial](https://processing.org/tutorials/pshader/)
 * Processing Immediate Mode: All ```beginShape/endShape``` examples
 * Processing Retained mode: All ```PShape``` examples
 * Processing Low-Level (OpenGL calls): Demos->Graphics->LowLevelGL examples
-* Proscene Immediate Mode: all InteractiveFrame examples with a graphics handler such as [Luxo2](https://github.com/remixlab/proscene/tree/master/examples/Frame/Luxo2)
-* Proscene Retained Mode: all InteractiveFrame examples with a pshape such as [DOF](https://github.com/remixlab/proscene/tree/master/examples/Model/DOF)
 
 H:
 
 ## Workshop
 
-> Benchmark of different rendering modes in Processing & Proscene along a [keyframe camera interpolator path](https://github.com/remixlab/proscene/tree/master/examples/Timing/CameraInterpolation)
+> Draw the [platonic solids](https://en.wikipedia.org/wiki/Platonic_solid) immediate and retained Processing modes
+
+Optionals:
+1. Doing it in OpenGL
+2. Doing it using [hemesh](http://www.wblut.com/he_mesh/)
