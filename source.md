@@ -3,13 +3,14 @@
 		<p>
 			Set your presentation theme: <br>
 			<!-- Hacks to swap themes after the page has loaded. Not flexible and only intended for the reveal.js demo deck. -->
-			<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/black.css'); return false;">Black (default)</a> -
+                        <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/black.css'); return false;">Black (default)</a> -
 			<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/white.css'); return false;">White</a> -
 			<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/league.css'); return false;">League</a> -
 			<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/sky.css'); return false;">Sky</a> -
 			<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/beige.css'); return false;">Beige</a> -
 			<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/simple.css'); return false;">Simple</a> <br>
 			<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/serif.css'); return false;">Serif</a> -
+			<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/blood.css'); return false;">Blood</a> -
 			<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/night.css'); return false;">Night</a> -
 			<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/moon.css'); return false;">Moon</a> -
 			<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/solarized.css'); return false;">Solarized</a>
@@ -37,9 +38,7 @@ H:
      * Modern Retained Mode
  4. Processing and Proscene Polygonal Meshes<!-- .element: class="fragment" data-fragment-index="4"-->
      * Immediate Mode & Retained Mode
- 5. References and Workshop<!-- .element: class="fragment" data-fragment-index="5"-->
- 
- 
+  
 H:
 
 ## Intro
@@ -47,127 +46,18 @@ H:
   1. Graphics Pipeline
   2. Polygonal Meshes
 
-
 V:
 
 ## Intro: Graphics Pipeline
 
-```java
-float angle;
-void setup() {
-  size(400, 400, P3D);
-  noStroke();  
-}
-
-public void draw() {
-  background(0);
-  
-  // Uniform variables: projection & modelview matrices
-  //                    and lightning parameters
-  camera(width/2, height/2, 300, width/2, height/2, 0, 0, 1, 0);
-  pointLight(200, 200, 200, width/2, height/2, 200);
-  translate(width/2, height/2);
-  rotateY(angle);
-  
-  //Vertex attributes: positions colors and normals
-  beginShape(QUADS);
-  normal(0, 0, 1);
-  fill(50, 50, 200);
-  vertex(-100, +100);
-  vertex(+100, +100);
-  fill(200, 50, 50);
-  vertex(+100, -100);
-  vertex(-100, -100);
-  endShape();  
-  
-  angle += 0.01;
-}
-```
-
-V:
-
-## Intro: Graphics Pipeline
-
-<figure>
-    <img style="float:left" height='500' src='fig/pipeline.png'/>
-    <figcaption>Graphics Pipeline</figcaption>
-</figure>
-```glsl
-//Vertex shader
-for (int i = 0; i < vertexCount; i++) {
-  output = vertexShader(vertex[i]);
-}
-```
-<!-- .element: class="fragment" data-fragment-index="1"-->
-
-```glsl
-//Fragment shader
-for (int i = 0; i < fragmentCount; i++) {
-  screenBuffer[fragment[i].xy] = fragmentShader(fragment[i]);
-}
-```
-<!-- .element: class="fragment" data-fragment-index="2"-->
-
-V:
-
-## Intro: Graphics Pipeline
-
-<figure>
-    <img style="float:left" height='500' src='fig/pipeline.png'/>
-    <figcaption>Graphics Pipeline</figcaption>
-</figure>
-```
-Variables
-* Uniform variables: projection & modelview matrices
-                     and lightning parameters
-* Vertex attributes: positions colors and normals
-* Varying variables: vertex(/fragment) color
-```
-<!-- .element: class="fragment" data-fragment-index="1"-->
-
-```sh
-Data flow paths among app (1),
-vertex shader (2) & Fragment shader (3)
-* Uniform variables: (1)->(2) & (1)->(3)
-* Vertex atrributes: (1)->(2)
-* Varying variables: (2)->(3)
-```
-<!-- .element: class="fragment" data-fragment-index="2"-->
-
-V:
-
-## Intro: Graphics Pipeline
-
-<figure>
-    <img style="float:left" height='500' src='fig/pipeline.png'/>
-    <figcaption>Graphics Pipeline</figcaption>
-</figure>
-
-
-```glsl
-//vert.glsl
-uniform mat4 transform;
-attribute vec4 vertex;
-attribute vec4 color;
-varying vec4 vertColor;
-
-void main() {
-  gl_Position = transform * vertex;    
-  vertColor = color;             
-}
-``` 
-<!-- .element: class="fragment" data-fragment-index="1"-->
-
-
-```glsl
-//frag.glsl
-varying vec4 vertColor;
-
-void main() {
-  gl_FragColor = vertColor;
-}
-```
-<!-- .element: class="fragment" data-fragment-index="2"-->
+<div class="ulist">
+    <img src="fig/pipeline.png" alt="pipeline" width="55%" style="float: right">
+    <ul style="width: 30%;">
+        <p class="fragment" data-fragment-index="1">Polygonal meshes</p>
+        <p class="fragment" data-fragment-index="2">Triangular: std</p>
+        <p class="fragment" data-fragment-index="3">Curves and surfaces</p>
+    </ul>
+</div>
 
 V:
 
