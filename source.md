@@ -240,20 +240,20 @@ V:
 //                      12 tris (2 per face)
 glBegin(GL_TRIANGLES); 
     // front face =================
-    glVertex3f(x0,x0,z0);    // v0
-    glVertex3f(x1,x1,z1);    // v1
-    glVertex3f(x2,x2,z2);    // v2
-    glVertex3f(x2,x2,z2);    // v2
-    glVertex3f(x3,x3,z3);    // v3
-    glVertex3f(x0,x0,z0);    // v0
+    glVertex3f(x0,y0,z0);    // v0
+    glVertex3f(x1,y1,z1);    // v1
+    glVertex3f(x2,y2,z2);    // v2
+    glVertex3f(x2,y2,z2);    // v2
+    glVertex3f(x3,y3,z3);    // v3
+    glVertex3f(x0,y0,z0);    // v0
 
     // right face =================
-    glVertex3f(x0,x0,z0);    // v0
-    glVertex3f(x3,x3,z3);    // v3
-    glVertex3f(x4,x4,z4);    // v4
-    glVertex3f(x4,x4,z4);    // v4
-    glVertex3f(x5,x5,z5);    // v5
-    glVertex3f(x0,x0,z0);    // v0
+    glVertex3f(x0,y0,z0);    // v0
+    glVertex3f(x3,y3,z3);    // v3
+    glVertex3f(x4,y4,z4);    // v4
+    glVertex3f(x4,y4,z4);    // v4
+    glVertex3f(x5,y5,z5);    // v5
+    glVertex3f(x0,y0,z0);    // v0
     ...                 // draw other 4 faces
 
 glEnd();
